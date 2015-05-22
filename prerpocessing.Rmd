@@ -1,0 +1,60 @@
+---
+title: "Kaggle Desafiío de Regresion"
+author: "ca.sanchez1209"
+date: "May 15, 2015"
+output: html_document
+---
+
+```{r}
+library(lubridate, quietly = TRUE)
+library(dplyr, quietly = TRUE)
+library(tidyr, quietly = TRUE)
+library(ggplot2, quietly = TRUE)
+library(caret, quietly = TRUE)
+```
+
+```{r}
+training <- read.csv("~/Desktop/training_set.csv",header=T)
+
+testing <- read.csv("~/Desktop/test_set.csv",header=T)
+```
+
+
+
+```{r}
+featurePlot(x = training[, 1:2], 
+            y = training$conteo_ordenes, 
+            plot = "pairs",auto.key = list(columns = 3))
+```
+Aqui podemos ver las variables codigo calendario y fecha, vemos que existe una tendencia "ondulada" con la fecha, sin embargo el codigo del calendario no es muy informativo, sobretodo sin saber que significa este. 
+```{r}
+featurePlot(x = training[, 3:4], 
+            y = training$conteo_ordenes, 
+            plot = "pairs",auto.key = list(columns = 3))
+```
+Aqui podemos ver una tendencia creciente con la variable de conteo de restaurantes.
+
+```{r}
+featurePlot(x = training[, 5:6], 
+            y = training$conteo_ordenes, 
+            plot = "pairs",auto.key = list(columns = 3))
+```
+Las temperaturas tambien parecen tener cierta tendencia, sin embargo esta vez decreciente.
+
+```{r}
+featurePlot(x = training[, 7:8], 
+            y = training$conteo_ordenes, 
+            plot = "pairs",auto.key = list(columns = 3))
+```
+Por la forma de la grafica parece que la variable de precipitacion no es muy informativa, sin embargo puede deberse a que los datos son de una zona donde llueve poco, de la misma manera con los eventos, los mas comunes son o lluvia o ninguno.
+
+La estacion del año en la que se encuentra, el tipo de ciudad en la que se encuentra, orientado hacia la cantidad de personas en ella, y la edad de las mismas, el costo total de las ordenes del dia y un calendario de eventos deportivos televisados, entre otras variables tambien podrían ser informativos.
+
+```{r}
+results <- read.csv("~/Desktop/result.csv",header=T)
+results$DiaSemana <-  wday(results$fecha, label=TRUE)
+training$DiaSemana <-  wday(training$fecha, label=TRUE)
+summary(training)
+summary(results)
+```
+En los datos de entrenamiento podemos ver que se distribuyen casi equitativamente las ordenes entre los dias de la semana. el dia que mas ordenes tiene es el sabado con 21 ordenes y los que menos tienen son lunes , martes, miercoles y viernes con 19. Cuando miramos los resultados de la prediccion vemos que lunes, martes, miercoles y viernes tienen 7 ordenes mientras que domingo jueves y sabado tienen únicamente 6.
